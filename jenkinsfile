@@ -1,0 +1,11 @@
+node('java11-mvn3.8.4') {
+    // some block
+    stage('source') {
+        git 'https://github.com/vishnuprabhu01/simple-java-maven-app.git'
+    }
+    stage('build') {
+        sh '''mvn clean package
+'''
+    }   
+    
+}
