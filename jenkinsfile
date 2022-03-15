@@ -12,4 +12,7 @@ node('java11-mvn3.8.4') {
     stage('junit'){
         junit '**/**.xml'
     }
+    stage('archive'){
+        archiveArtifacts artifacts: 'testdir/test.war', followSymlinks: false
+    }
 }
