@@ -1,8 +1,7 @@
 pipeline {
     agent { label 'java11-mvn3.8.4' }
     triggers { upstream(upstreamProjects: 'testfirst', threshold: hudson.model.Result.SUCCESS) }
-             { pollSCM('30 */4 * * 1-5') } 
-    stages {
+                 stages {
         stage('sourcecode'){
             steps{
                  git 'https://github.com/vishnuprabhu01/simple-java-maven-app.git'
