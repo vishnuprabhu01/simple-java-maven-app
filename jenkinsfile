@@ -1,5 +1,5 @@
 pipeline {
-    agent ( label'java11-mvn3.8.4')
+    agent ( label 'java11-mvn3.8.4' )
     stages {
         stage('sourcecode'){
             steps{
