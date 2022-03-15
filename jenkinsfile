@@ -1,5 +1,6 @@
 node('java11-mvn3.8.4') {
     // some block
+    properties([parameters([choice(choices: ['master', 'scripted', 'declarative'], description: 'This is the choice of the branch', name: 'BUILD_MAVEN'), string(defaultValue: 'package', description: 'This is the default maven goal', name: 'MAVEN_GOAL', trim: true)])])
     stage('source') {
         git 'https://github.com/vishnuprabhu01/simple-java-maven-app.git'
     }
