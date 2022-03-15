@@ -1,13 +1,23 @@
-node('java11-mvn3.8.4') {
-    // some block
-    stage('source') {
-        git 'https://github.com/vishnuprabhu01/simple-java-maven-app.git'
-    }
-    stage('build') {
-        sh '''/usr/local/apache-maven-3.8.4/bin/mvn clean package
-'''
-    }   
-    stage('junit'){
-        junit '**/**.xml'
-    }
+pipeline {
+    agent ( label'java11-mvn3.8.4')
+    stages {
+        stage('sourcecode'){
+            steps{
+                 git 'https://github.com/vishnuprabhu01/simple-java-maven-app.git'
+            }
+        }
+        stage('build'){
+            steps{
+                sh '''/usr/local/apache-maven-3.8.4/bin/mvn clean package
+                '''
+            }
+        }
+        stage('publish test reports') {
+            steps{
+                        junit '**/TEST-*.xml'
+            }             
+        }
 }
+
+
+
