@@ -16,7 +16,7 @@ pipeline {
         }
         stage('build') {
             steps {
-                  withSonarQubeEnv('SONAR_9.2.1') {
+                  withSonarQubeEnv('SONARQUBE') {
                     sh "/usr/local/apache-maven-3.8.4/bin/mvn ${params.MAVEN_GOAL}"
                     sh "/usr/local/apache-maven-3.8.4/bin/mvn sonar:sonar -Dsonar.login=2b652cf674bb133784ff82c3b5ad007ca2aff6ad"
                 }
