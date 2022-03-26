@@ -16,6 +16,14 @@ pipeline {
         stage('publish test reports') {
             steps{
                         junit '**/TEST-*.xml'
+        stage('sonarqube code quality') {
+            steps{
+                withSonarQubeEnv(credentialsId: 'sonar') {
+                sh '/usr/local/apache-maven-3.8.4/bin/mvn clean package sonar:sonar'                         
+}
+            }
+        }
+
             }             
         }
     }   
