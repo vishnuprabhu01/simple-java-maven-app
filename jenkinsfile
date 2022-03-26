@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jdk11-mvn3.8.4' }
+    agent { label 'java11-mvn3.8.4' }
     triggers { 
         cron('45 23 * * 1-5')
         pollSCM('*/5 * * * *')
