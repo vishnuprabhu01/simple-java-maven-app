@@ -1,25 +1,26 @@
 pipeline {
-    agent { label 'java11-mvn3.8.4' }
-    triggers { upstream(upstreamProjects: 'testfirst', threshold: hudson.model.Result.SUCCESS) }
-                 stages {
-        stage('sourcecode'){
-            steps{
-                 git 'https://github.com/vishnuprabhu01/simple-java-maven-app.git'
+    agent { label 'jdk11-mvn3.8.4' }
+    triggers { 
+        cron('45 23 * * 1-5')
+        pollSCM('*/5 * * * *')
+    }
+    parameters {
+        string(name: 'MAVEN_GOAL', defaultValue: 'package', description: 'This is maven goal' )
+        choice(name: 'BRANCH_TO_BUILD', choices: ['declarative', 'master', 'scripted'], description: 'Branch to build')
+    }
+    stages {
+        stage('scm') {
+            steps {
+                git url: 'https://github.com/GitPracticeRepo/java11-examples.git', branch: "${params.BRANCH_TO_BUILD}"
             }
         }
-        stage('build'){
-            steps{
-                sh '''/usr/local/apache-maven-3.8.4/bin/mvn clean package
-                '''
+        stage('build') {
+            steps {
+                  withSonarQubeEnv('SONAR_9.2.1') {
+                    sh "/usr/local/apache-maven-3.8.4/bin/mvn ${params.MAVEN_GOAL}"
+                    sh "/usr/local/apache-maven-3.8.4/bin/mvn sonar:sonar -Dsonar.login=2b652cf674bb133784ff82c3b5ad007ca2aff6ad"
+                }
+                
             }
         }
-        stage('publish test reports') {
-            steps{
-                        junit '**/TEST-*.xml'
-            }             
-        }
-    }   
-}
-
-
-
+    }
