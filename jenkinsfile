@@ -16,6 +16,8 @@ pipeline {
         stage('publish test reports') {
             steps{
                         junit '**/TEST-*.xml'
+            }
+        }
         stage('sonarqube code quality') {
             steps{
                 withSonarQubeEnv(credentialsId: 'sonar') {
@@ -24,10 +26,7 @@ pipeline {
             }
         }
 
-            }             
-        }
-    }   
-}
+                    
 
 
 
