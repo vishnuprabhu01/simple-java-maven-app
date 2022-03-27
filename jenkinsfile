@@ -1,32 +1,26 @@
 pipeline {
     agent { label 'java11-mvn3.8.4' }
-    triggers { upstream(upstreamProjects: 'testfirst', threshold: hudson.model.Result.SUCCESS) }
-                 stages {
-        stage('sourcecode'){
-            steps{
-                 git 'https://github.com/vishnuprabhu01/simple-java-maven-app.git'
+    triggers { 
+        cron('45 23 * * 1-5')
+        pollSCM('*/5 * * * *')
+    }
+    parameters {
+        string(name: 'MAVEN_GOAL', defaultValue: 'package', description: 'This is maven goal' )
+        choice(name: 'BRANCH_TO_BUILD', choices: ['declarative', 'master', 'scripted'], description: 'Branch to build')
+    }
+    stages {
+        stage('scm') {
+            steps {
+                git url: 'https://github.com/GitPracticeRepo/java11-examples.git', branch: "${params.BRANCH_TO_BUILD}"
             }
         }
-        stage('build'){
-            steps{
-                sh '''/usr/local/apache-maven-3.8.4/bin/mvn clean package
-                '''
+        stage('build') {
+            steps {
+                  withSonarQubeEnv(installationName: 'SONARQUBE' , credentialsId: 'sonar' , envOnly: true) {
+                   sh "/usr/local/apache-maven-3.8.4/bin/mvn clean package sonar:sonar "
+                }
+                
             }
         }
-        stage('publish test reports') {
-            steps{
-                        junit '**/TEST-*.xml'
-            }
-        }
-        stage('sonarqube code quality') {
-            steps{
-                withSonarQubeEnv(credentialsId: 'sonar') {
-                sh '/usr/local/apache-maven-3.8.4/bin/mvn clean package sonar:sonar'                         
-}
-            }
-        }
-
-                 }        
-
-
-
+    }
+}   
